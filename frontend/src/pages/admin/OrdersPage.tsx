@@ -39,6 +39,7 @@ export function OrdersPage() {
   const [error, setError] = useState<string | null>(null);
   const [statusDrafts, setStatusDrafts] = useState<Record<number, string>>({});
   const [amountDrafts, setAmountDrafts] = useState<Record<number, string>>({});
+  const [teamDrafts, setTeamDrafts] = useState<Record<number, number | null>>({});
 
   async function loadData() {
     const [orderData, teamData] = await Promise.all([
@@ -64,10 +65,10 @@ export function OrdersPage() {
   }, []);
 
   async function updateOrder(orderId: number) {
-    const payload = {
-      status: statusDrafts[orderId],
-      collected_amount: Number(amountDrafts[orderId]),
-    };
+    const payload: Record<string, any> = {};
+    if (orderId in statusDrafts) payload.status = statusDrafts[orderId];
+    if (orderId in amountDrafts) payload.collected_amount = Number(amountDrafts[orderId]);
+    if (orderId in teamDrafts) payload.assigned_team_member_id = teamDrafts[orderId];
 
     await apiRequest<Order>(`/api/admin/orders/${orderId}`, {
       method: "PATCH",
@@ -128,7 +129,22 @@ export function OrdersPage() {
                   onChange={(event) => setAmountDrafts((current) => ({ ...current, [order.id]: event.target.value }))}
                 />
               </td>
-              <td>{order.assigned_team_member_id ?? "-"}</td>
+              <td>
+                <select
+                  className="select"
+                  value={teamDrafts[order.id] ?? order.assigned_team_member_id ?? ""}
+                  onChange={(event) =>
+                    setTeamDrafts((current) => ({ ...current, [order.id]: event.target.value === "" ? null : Number(event.target.value) }))
+                  }
+                >
+                  <option value="">-</option>
+                  {teamMembers.map((tm) => (
+                    <option key={tm.id} value={tm.id}>
+                      {tm.name} ({tm.role})
+                    </option>
+                  ))}
+                </select>
+              </td>
               <td>
                 <button className="button-secondary" type="button" onClick={() => void updateOrder(order.id)}>
                   Save

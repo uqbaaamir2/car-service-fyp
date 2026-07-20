@@ -97,7 +97,7 @@ export function ContactUsPage() {
                     height="500"
                     style={{ borderRadius: "0 0 8px 8px", border: "none" }}
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3401.6266321313726!2d74.34286!3d31.54728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391903fb6effffff%3A0x6b9e0acae8947cbf!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1234567890"
-                    allowFullScreen=""
+                    allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                   />
